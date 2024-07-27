@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Auto Update</string>
+    <string name="dialog_request_restart_message">Please restart the device to complete installation!</string>
+    <string name="dialog_confirm_yes">Yes</string>
+    <string name="dialog_confirm_no">No</string>
+    <string name="dialog_confirm_ok">OK</string>
+    <string name="dialog_confirm_cancel">Cancel</string>
+    <string name="dialog_confirm_restart">Restart</string>
+</resources>
