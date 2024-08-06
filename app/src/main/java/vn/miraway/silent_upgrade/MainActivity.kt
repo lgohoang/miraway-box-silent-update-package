@@ -1,9 +1,12 @@
 package vn.miraway.silent_upgrade
 
+import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.app.AlertDialog
 import android.app.PendingIntent
 import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
@@ -201,6 +204,36 @@ class AdminReceiver: DeviceAdminReceiver() {
     override fun onEnabled(context: Context, intent: Intent) {
         super.onEnabled(context, intent)
         Log.i(tag,"enable")
+    }
+}
+
+class PackageReplacedReceiver : BroadcastReceiver() {
+    private val tag = "package replace"
+    @SuppressLint("UnsafeProtectedBroadcastReceiver")
+    override fun onReceive(context: Context, intent: Intent) {
+        // Restart your app here
+        Log.i(tag, "onReceive")
+        if (!isAppRunning(context, context.packageName)){
+            context.startActivity(Intent(context, MainActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            })
+        }
+    }
+
+    private fun isAppRunning(
+        context: Context,
+        packageName: String
+    ): Boolean {
+        (context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).let { am ->
+            for (processInfo in am.runningAppProcesses) {
+                if (processInfo.processName == packageName) {
+                    if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND){
+                        return true
+                    }
+                }
+            }
+        }
+        return false
     }
 }
 
