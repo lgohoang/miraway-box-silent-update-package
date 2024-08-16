@@ -65,8 +65,25 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
 
+    private fun lock() {
+        (getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager).let { dpm ->
+            ComponentName(this, AdminReceiver::class.java).let { ar ->
+                if (dpm.isAdminActive(ar)) {
+                    try {
+                        dpm.setLockTaskPackages(ar, arrayOf(packageName))
+                        startLockTask()
+                    } catch (ex: Exception) {
+                        Log.e("main","lock task error: $ex")
+                    }
+                }
+            }
+        }
+    }
 
+    private fun unLock() {
+        stopLockTask()
     }
 
     private fun silentUpdate(context: Context){
